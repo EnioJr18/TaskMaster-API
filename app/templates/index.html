@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster App</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 400px; }
+        h2 { text-align: center; color: #333; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        .hidden { display: none; }
+        .task-item { background: #fff; border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .task-item span { flex-grow: 1; }
+        .logout { background-color: #dc3545; margin-top: 10px; }
+        .error { color: red; text-align: center; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="login-screen">
+        <h2>🔐 Login TaskMaster</h2>
+        <input type="text" id="username" placeholder="Usuário (ex: admin_supremo)">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="fazerLogin()">Entrar</button>
+        <p class="error" id="login-error"></p>
+    </div>
+
+    <div class="container hidden" id="app-screen">
+        <h2>📋 Minhas Tarefas</h2>
+        
+        <div style="display: flex; gap: 5px;">
+            <input type="text" id="new-task-title" placeholder="Nova tarefa...">
+            <button onclick="criarTarefa()" style="width: auto;">+</button>
+        </div>
+
+        <div id="task-list" style="margin-top: 20px; border: 1px solid #eee; border-radius: 5px;">
+            </div>
+
+        <button class="logout" onclick="logout()">Sair</button>
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:5000";
+        let token = localStorage.getItem('token');
+
+        // Se já tiver token salvo, vai direto para o App
+        if (token) {
+            mostrarApp();
+        }
+
+        async function fazerLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errorMsg = document.getElementById('login-error');
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    token = data.token;
+                    localStorage.setItem('token', token); // Salva no navegador
+                    mostrarApp();
+                } else {
+                    errorMsg.innerText = data.erro || "Falha no login";
+                }
+            } catch (e) {
+                errorMsg.innerText = "Erro ao conectar com o servidor";
+            }
+        }
+
+        function mostrarApp() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+            carregarTarefas();
+        }
+
+        async function carregarTarefas() {
+            const response = await fetch(`${API_URL}/tasks`, {
+                headers: { 'Authorization': token }
+            });
+
+            if (response.status === 401) { logout(); return; } // Token expirou
+
+            const tasks = await response.json();
+            const list = document.getElementById('task-list');
+            list.innerHTML = '';
+
+            tasks.forEach(task => {
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                div.innerHTML = `<span>${task.title}</span> <small>${task.status ? '✅' : '🕒'}</small>`;
+                list.appendChild(div);
+            });
+        }
+
+        async function criarTarefa() {
+            const title = document.getElementById('new-task-title').value;
+            if (!title) return;
+
+            await fetch(`${API_URL}/tasks`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': token 
+                },
+                body: JSON.stringify({ title: title, description: "Criado via Front" })
+            });
+
+            document.getElementById('new-task-title').value = '';
+            carregarTarefas();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            location.reload();
+        }
+    </script>
+</body>
+</html>

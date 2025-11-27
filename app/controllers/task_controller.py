@@ -1,17 +1,20 @@
 from flask import jsonify, request
 from app import app
 from app.models.task_manager import TaskManager
+from app.utils.auth import token_required
 
 manager = TaskManager()
 
 
 @app.route('/tasks', methods=['GET'])
+@token_required
 def list_tasks():
     tasks_lists = manager.get_all_tasks()
     return jsonify(tasks_lists), 200
 
 
 @app.route('/tasks', methods=['POST'])
+@token_required
 def create_task():
     data = request.json
 
@@ -23,6 +26,7 @@ def create_task():
 
 
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
+@token_required
 def delete_task(task_id):
     sucesso = manager.delete_task(task_id)
     if sucesso:
@@ -32,6 +36,7 @@ def delete_task(task_id):
 
 
 @app.route('/tasks/<int:task_id>', methods=['PUT'])
+@token_required
 def update_task(task_id):
     data = request.json
 
