@@ -1,10 +1,10 @@
-# 🚀 TaskMaster API
+# 🛡️ TaskMaster API
 
-![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat&logo=python)
-![Flask](https://img.shields.io/badge/Flask-Microframework-lightgrey?style=flat&logo=flask)
-![SQLite](https://img.shields.io/badge/Database-SQLite-blue?style=flat&logo=sqlite)
-![License](https://img.shields.io/badge/License-MIT-green)
-
+![Python Version](https://img.shields.io/badge/python-3.10%2B-blue?style=flat&logo=python)
+![Flask](https://img.shields.io/badge/flask-2.3.x-lightgrey?style=flat&logo=flask)
+![Security](https://img.shields.io/badge/security-JWT-orange?style=flat&logo=json-web-tokens)
+![Status](https://img.shields.io/badge/status-active-success?style=flat)
+![License](https://img.shields.io/badge/license-MIT-green?style=flat)
 
 ## 📖 Sobre o Projeto
 
@@ -16,129 +16,143 @@ Este projeto simula o backend de uma aplicação de produtividade (como Todoist 
 
 ---
 
-## 🏗️ Arquitetura do Projeto
+## 🧠 Arquitetura e Design
 
-O sistema segue o padrão **MVC (Model-View-Controller)** adaptado para APIs, garantindo separação de responsabilidades e facilidade de manutenção.
+O projeto segue estritamente o padrão **MVC (Model-View-Controller)** adaptado para APIs, garantindo a separação de responsabilidades (SoC).
 
+### Fluxo da Aplicação
+graph LR
+    A[Cliente] -->|Request + Token| B(Middleware Auth)
+    B -->|Aprovado| C{Controller}
+    C -->|Regras de Negócio| D[Model Manager]
+    D -->|SQL Query| E[(SQLite Database)]
+    E -->|Dados| D
+    D -->|Objetos| C
+    C -->|JSON| A
 
-CLIENTE (Postman/Frontend)
-      ⬇️  (Requisição HTTP)
-[ CONTROLLER ] --> Gerencia as rotas e valida a entrada de dados.
-      ⬇️  (Chama métodos)
-[   MODEL    ] --> Regras de negócio e manipulação de objetos.
-      ⬇️  (SQL)
-[ DATABASE ] --> Persistência dos dados (SQLite).
+## 📂 Estrutura de Pastas
+A organização do código reflete a separação lógica:
 
+projeto_taskmaster/
+│
+├── app/
+│   ├── __init__.py          # Inicialização do App e Flask
+│   ├── controllers/         # Rotas e validação de entrada (HTTP)
+│   │   ├── auth_controller.py
+│   │   └── task_controller.py
+│   ├── models/              # Lógica de negócios e acesso a dados (DAO)
+│   │   ├── task.py
+│   │   ├── task_manager.py
+│   │   └── user_manager.py
+│   └── utils/               # Utilitários e Decorators
+│       └── auth.py          # Lógica de verificação JWT
+│
+├── db_setup.py              # Script de migração/criação do banco
+├── run.py                   # Ponto de entrada do servidor
+├── config.py                # Variáveis de ambiente e segredos
+└── requirements.txt         # Dependências do projeto
 
 ## ⚙️ Funcionalidades
-**CRUD Completo**: Criação, Leitura, Atualização e Exclusão de tarefas.
+**Gerenciamento de Tarefas (CRUD)**
+-Criação de Tarefas: Adicionar novas tarefas com título e descrição.
+-Listagem de Tarefas: Visualizar todas as tarefas cadastradas no sistema.
+-Atualização Inteligente: Editar tarefas existentes. O sistema suporta edição parcial (ex: mudar apenas o status para "Concluído" sem precisar reescrever o título).
+-Exclusão de Tarefas: Remover tarefas permanentemente do banco de dados.
 
-**Update Dinâmico** (Smart Patch): Permite atualizar apenas um campo (ex: status) sem precisar re-enviar todo o objeto.
+**Gerenciamento de Usuários (Autenticação)**
+-Registro de Conta: Permite que novos usuários criem uma conta fornecendo usuário e senha.
+-Login Seguro: Autenticação via credenciais que retorna um Token de Acesso (JWT) temporário.
+-Sessão Stateless: Não requer cookies de sessão; o acesso é garantido puramente via token.
 
-**Persistência de Dados**: Uso de banco SQL para armazenamento seguro.
+## ⚙️ Funcionalidades Técnicas (Engenharia e Código)
+**Segurança Avançada**
+-Criptografia de Senhas: Utiliza o algoritmo pbkdf2:sha256 para hashing. As senhas nunca são salvas em texto puro no banco.
+-Proteção via Decorators: Implementação de um middleware @token_required que intercepta requisições e valida a assinatura do JWT antes de permitir o acesso à rota.
+-Prevenção contra SQL Injection: Uso estrito de Parameterized Queries (placeholders ?) em todas as camadas de acesso ao banco.
 
-**Tratamento de Erros**: Retornos HTTP adequados (200, 201, 400, 404).
+**Arquitetura e Design**
+-Padrão MVC: Separação clara entre Rotas (Controllers), Lógica de Negócio/Dados (Models) e Utilitários.
+-Persistência SQL: Uso de banco de dados relacional (SQLite) com criação automática de tabelas e relacionamentos.
+-API RESTful: Endpoints padronizados utilizando os verbos HTTP corretos (GET, POST, PUT, DELETE) e códigos de status semânticos (200, 201, 400, 401, 404).
 
-## 🏆 Destaques Técnicos
+**Lógica Otimizada**
+-Construtor de Queries Dinâmico: O método de atualização (UPDATE) detecta quais campos foram enviados no JSON e monta a string SQL sob demanda, evitando sobrescrita acidental de dados.
 
-O diferencial deste projeto reside nas decisões de implementação:
+## 🚀 Destaques Técnicos
+**Autenticação JWT (JSON Web Token)**: Implementação manual de um sistema de login seguro. O token é exigido no Header para rotas protegidas.
 
-* **Design Pattern MVC:** O código não está jogado em um único arquivo. A lógica de rotas (`Controllers`) está totalmente desacoplada da lógica de dados (`Models`), facilitando a manutenção e testes.
-* **Smart Updates (PATCH Logic):** A implementação do método `PUT` possui lógica dinâmica. O sistema detecta quais campos foram enviados e monta a query SQL em tempo de execução, permitindo atualizações parciais eficientes sem sobrescrever dados não informados.
-* **Segurança (SQL Injection):** Todas as interações com o banco de dados utilizam *Parameterized Queries* (Placeholders `?`), prevenindo ataques de injeção de SQL.
-* **Tratamento de Dados:** Conversão automática de tipos (booleans do JSON para integers do SQLite e vice-versa) garantindo a integridade dos dados na persistência.
+**Password Hashing**: As senhas são criptografadas com pbkdf2:sha256 antes de serem salvas, garantindo que nem mesmo o admin tenha acesso às senhas originais.
 
-## 🛠️ Instalação e Configuração
-Siga os passos abaixo para rodar a API localmente:
+**Smart Updates (PATCH/PUT)**: O sistema utiliza construção dinâmica de SQL para permitir atualizações parciais. Você pode enviar apenas o campo que deseja alterar (ex: status) sem sobrescrever o resto do objeto.
 
-##### 1. Clone o repositório
+**Prevenção de SQL Injection**: Uso rigoroso de Parameterized Queries (placeholders ?) em todas as interações com o banco.
 
-git clone [https://github.com/SEU-USUARIO/projeto_taskmaster.git](https://github.com/SEU-USUARIO/projeto_taskmaster.git)
-cd projeto_taskmaster
+**Tratamento de Erros**: Respostas HTTP padronizadas (400 para erro do cliente, 401 para não autorizado, 404 para não encontrado).
 
-##### 2. Configure o Ambiente Virtual
-É recomendado usar um ambiente virtual para isolar as dependências.
+## 🛠️ Instalação e Execução
+Pré-requisitos
+Python 3.10 ou superior
 
-##### Windows
+Passo a Passo
+Clone o repositório:
+
+git clone [https://github.com/EnioJr18/TaskMaster-API.git](https://github.com/EnioJr18/TaskMaster-API.git)
+cd TaskMaster-API
+
+Crie e ative o ambiente virtual:
+# Windows
 python -m venv venv
 .\venv\Scripts\activate
 
-##### Linux/macOS
+# Linux/Mac
 python3 -m venv venv
 source venv/bin/activate
 
-##### 3. Instale as Dependências
+Instale as dependências:
+pip install -r requirements.txt
 
-pip install flask requests
-
-##### 4. Inicialize o Banco de Dados
-
+Prepare o Banco de Dados:
 python db_setup.py
-Isso criará o arquivo taskmaster.db na raiz do projeto.
+(Isso criará o arquivo taskmaster.db e as tabelas necessárias)
 
-##### 5. Execute o Servidor
-
+Inicie o Servidor:
 python run.py
-O servidor iniciará em http://127.0.0.1:5000.
 
-## 📡 Documentação da API
+## 🔑 Documentação da API
 
-*1. Listar Tarefas*
-Retorna todas as tarefas cadastradas.
+Autenticação
+Método     Endpoint     Descrição             Body Necessário
+POST       /register    Cria novo usuário     "{""username"": ""..."", ""password"": ""...""}"
+POST       /login       Retorna o Token JWT   "{""username"": ""..."", ""password"": ""...""}"
 
-URL: /tasks
-Método: GET
-Resposta Sucesso (200):
-JSON
-[
-  {
-    "id": 1,
-    "title": "Estudar Python",
-    "description": "Focar em Flask e POO",
-    "status": false
-  }
-]
+Tarefas (Requer Token)
+Header Obrigatório: Authorization: <SEU_TOKEN_AQUI>
 
-*2. Criar Tarefa*
-URL: /tasks
-Método: POST
-Corpo (JSON):
-JSON
-{
-  "title": "Comprar Café",
-  "description": "Café em grãos arábica"
-}
+Método     Endpoint      Descrição                  Exemplo de Body
+GET        /tasks        Lista todas as tarefas     N/A
+POST       /tasks        Cria nova tarefa           "{""title"": ""Estudar"", ""description"": ""SQL""}"
+PUT        /tasks/<id>,  Atualiza (Parcial/Total)   "{""status"": true}"
+DELETE     /tasks/<id>,  Remove uma tarefa          N/A
 
-*3. Atualizar Tarefa (Dinâmico)*
-Você pode enviar apenas os campos que deseja alterar.
-URL: /tasks/<id>
-Método: PUT
-Corpo (Exemplo - Mudar só status):
-JSON
-{
-  "status": true
-}
 
-*4. Deletar Tarefa*
-URL: /tasks/<id>
-Método: DELETE
 
 
 ## 🧪 Testes Automatizados
-O projeto inclui um script de testes de integração (testador.py) que simula um cliente real realizando todas as operações do CRUD.
+O projeto inclui scripts para validação de funcionamento e segurança.
 
-Para rodar os testes (com o servidor ligado):
-
-python testador.py
+Para testar o fluxo completo (Auth + CRUD): Certifique-se que o servidor está rodando e execute:
+python testador_seguro.py
 
 ## 🚧 Roadmap & Melhorias Futuras
+Este projeto está em constante evolução. Os próximos passos incluem:
 
-Este projeto está em evolução constante. Os próximos passos para a versão 2.0 incluem:
+[ ] Docker: Containerização da aplicação para fácil deploy.
+[ ] Swagger UI: Documentação interativa automática.
+[ ] Testes Unitários: Implementação de Pytest com cobertura de código.
+[ ] Filtros Avançados: Busca de tarefas por status ou título via Query Par
 
-- [ ] **Autenticação JWT:** Implementar login e cadastro de usuários para que cada um veja apenas suas tarefas.
-- [ ] **Dockerização:** Criar um `Dockerfile` e `docker-compose` para rodar a aplicação em containers isolados.
-- [ ] **Testes Unitários:** Migrar do script de teste atual para o framework `pytest` com cobertura de código.
-- [ ] **Swagger UI:** Adicionar documentação interativa automática das rotas.
+## 📄 Licença
+Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
 ## 👨‍💻 Autor
 Desenvolvido por Enio Jr como parte de um portfólio de Engenharia de Software Backend.
