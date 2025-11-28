@@ -20,63 +20,63 @@ Este projeto simula o backend de uma aplicação de produtividade (como Todoist 
 
 O projeto segue estritamente o padrão **MVC (Model-View-Controller)** adaptado para APIs, garantindo a separação de responsabilidades (SoC).
 
-### Fluxo da Aplicação
-graph LR
-    A[Cliente] -->|Request + Token| B(Middleware Auth)
-    B -->|Aprovado| C{Controller}
-    C -->|Regras de Negócio| D[Model Manager]
-    D -->|SQL Query| E[(SQLite Database)]
-    E -->|Dados| D
-    D -->|Objetos| C
-    C -->|JSON| A
+### Fluxo da Aplicação<br>
+graph LR<br>
+    A[Cliente] -->|Request + Token| B(Middleware Auth)<br>
+    B -->|Aprovado| C{Controller}<br>
+    C -->|Regras de Negócio| D[Model Manager]<br>
+    D -->|SQL Query| E[(SQLite Database)]<br>
+    E -->|Dados| D<br>
+    D -->|Objetos| C<br>
+    C -->|JSON| A<br>
 
 ## 📂 Estrutura de Pastas
 A organização do código reflete a separação lógica:
 
-projeto_taskmaster/
-│
-├── app/
-│   ├── __init__.py          # Inicialização do App e Flask
-│   ├── controllers/         # Rotas e validação de entrada (HTTP)
-│   │   ├── auth_controller.py
-│   │   └── task_controller.py
-│   ├── models/              # Lógica de negócios e acesso a dados (DAO)
-│   │   ├── task.py
-│   │   ├── task_manager.py
-│   │   └── user_manager.py
-│   └── utils/               # Utilitários e Decorators
-│       └── auth.py          # Lógica de verificação JWT
-│
-├── db_setup.py              # Script de migração/criação do banco
-├── run.py                   # Ponto de entrada do servidor
-├── config.py                # Variáveis de ambiente e segredos
-└── requirements.txt         # Dependências do projeto
+projeto_taskmaster/ <br>
+│ <br>
+├── app/ <br>
+│   ├── __init__.py          # Inicialização do App e Flask<br>
+│   ├── controllers/         # Rotas e validação de entrada (HTTP)<br>
+│   │   ├── auth_controller.py<br>
+│   │   └── task_controller.py<br>
+│   ├── models/              # Lógica de negócios e acesso a dados (DAO)<br>
+│   │   ├── task.py<br>
+│   │   ├── task_manager.py<br>
+│   │   └── user_manager.py<br>
+│   └── utils/               # Utilitários e Decorators<br>
+│       └── auth.py          # Lógica de verificação JWT<br>
+│<br>
+├── db_setup.py              # Script de migração/criação do banco<br>
+├── run.py                   # Ponto de entrada do servidor<br>
+├── config.py                # Variáveis de ambiente e segredos<br>
+└── requirements.txt         # Dependências do projeto<br>
 
 ## ⚙️ Funcionalidades
-**Gerenciamento de Tarefas (CRUD)**
--Criação de Tarefas: Adicionar novas tarefas com título e descrição.
--Listagem de Tarefas: Visualizar todas as tarefas cadastradas no sistema.
--Atualização Inteligente: Editar tarefas existentes. O sistema suporta edição parcial (ex: mudar apenas o status para "Concluído" sem precisar reescrever o título).
--Exclusão de Tarefas: Remover tarefas permanentemente do banco de dados.
+**Gerenciamento de Tarefas (CRUD)** <br>
+-Criação de Tarefas: Adicionar novas tarefas com título e descrição.<br>
+-Listagem de Tarefas: Visualizar todas as tarefas cadastradas no sistema.<br>
+-Atualização Inteligente: Editar tarefas existentes. O sistema suporta edição parcial (ex: mudar apenas o status para "Concluído" sem precisar reescrever o título).<br>
+-Exclusão de Tarefas: Remover tarefas permanentemente do banco de dados.<br>
 
-**Gerenciamento de Usuários (Autenticação)**
--Registro de Conta: Permite que novos usuários criem uma conta fornecendo usuário e senha.
--Login Seguro: Autenticação via credenciais que retorna um Token de Acesso (JWT) temporário.
--Sessão Stateless: Não requer cookies de sessão; o acesso é garantido puramente via token.
+**Gerenciamento de Usuários (Autenticação)** <br>
+-Registro de Conta: Permite que novos usuários criem uma conta fornecendo usuário e senha.<br>
+-Login Seguro: Autenticação via credenciais que retorna um Token de Acesso (JWT) temporário.<br>
+-Sessão Stateless: Não requer cookies de sessão; o acesso é garantido puramente via token.<br>
 
-## ⚙️ Funcionalidades Técnicas (Engenharia e Código)
-**Segurança Avançada**
--Criptografia de Senhas: Utiliza o algoritmo pbkdf2:sha256 para hashing. As senhas nunca são salvas em texto puro no banco.
--Proteção via Decorators: Implementação de um middleware @token_required que intercepta requisições e valida a assinatura do JWT antes de permitir o acesso à rota.
--Prevenção contra SQL Injection: Uso estrito de Parameterized Queries (placeholders ?) em todas as camadas de acesso ao banco.
+## ⚙️ Funcionalidades Técnicas (Engenharia e Código) <br>
+**Segurança Avançada**<br>
+-Criptografia de Senhas: Utiliza o algoritmo pbkdf2:sha256 para hashing. As senhas nunca são salvas em texto puro no banco.<br>
+-Proteção via Decorators: Implementação de um middleware @token_required que intercepta requisições e valida a assinatura do JWT antes de permitir o acesso à rota.<br>
+-Prevenção contra SQL Injection: Uso estrito de Parameterized Queries (placeholders ?) em todas as camadas de acesso ao banco.<br>
 
-**Arquitetura e Design**
--Padrão MVC: Separação clara entre Rotas (Controllers), Lógica de Negócio/Dados (Models) e Utilitários.
--Persistência SQL: Uso de banco de dados relacional (SQLite) com criação automática de tabelas e relacionamentos.
--API RESTful: Endpoints padronizados utilizando os verbos HTTP corretos (GET, POST, PUT, DELETE) e códigos de status semânticos (200, 201, 400, 401, 404).
+**Arquitetura e Design** <br>
+-Padrão MVC: Separação clara entre Rotas (Controllers), Lógica de Negócio/Dados (Models) e Utilitários.<br>
+-Persistência SQL: Uso de banco de dados relacional (SQLite) com criação automática de tabelas e relacionamentos.<br>
+-API RESTful: Endpoints padronizados utilizando os verbos HTTP corretos (GET, POST, PUT, DELETE) e códigos de status semânticos (200, 201, 400, 401, 404).<br>
 
-**Lógica Otimizada**
--Construtor de Queries Dinâmico: O método de atualização (UPDATE) detecta quais campos foram enviados no JSON e monta a string SQL sob demanda, evitando sobrescrita acidental de dados.
+**Lógica Otimizada** <br>
+-Construtor de Queries Dinâmico: O método de atualização (UPDATE) detecta quais campos foram enviados no JSON e monta a string SQL sob demanda, evitando sobrescrita acidental de dados.<br>
 
 ## 🚀 Destaques Técnicos
 **Autenticação JWT (JSON Web Token)**: Implementação manual de um sistema de login seguro. O token é exigido no Header para rotas protegidas.
@@ -90,7 +90,7 @@ projeto_taskmaster/
 **Tratamento de Erros**: Respostas HTTP padronizadas (400 para erro do cliente, 401 para não autorizado, 404 para não encontrado).
 
 ## 🛠️ Instalação e Execução
-Pré-requisitos
+Pré-requisitos<br>
 Python 3.10 ou superior
 
 Passo a Passo
@@ -101,38 +101,38 @@ cd TaskMaster-API
 
 Crie e ative o ambiente virtual:
 # Windows
-python -m venv venv
+python -m venv venv<br>
 .\venv\Scripts\activate
 
 # Linux/Mac
-python3 -m venv venv
+python3 -m venv venv<br>
 source venv/bin/activate
 
-Instale as dependências:
+Instale as dependências:<br>
 pip install -r requirements.txt
 
-Prepare o Banco de Dados:
-python db_setup.py
+Prepare o Banco de Dados:<br>
+python db_setup.py<br>
 (Isso criará o arquivo taskmaster.db e as tabelas necessárias)
 
-Inicie o Servidor:
+Inicie o Servidor:<br>
 python run.py
 
 ## 🔑 Documentação da API
 
 Autenticação
-Método     Endpoint     Descrição             Body Necessário
-POST       /register    Cria novo usuário     "{""username"": ""..."", ""password"": ""...""}"
-POST       /login       Retorna o Token JWT   "{""username"": ""..."", ""password"": ""...""}"
+Método     Endpoint     Descrição             Body Necessário<br>
+POST       /register    Cria novo usuário     "{""username"": ""..."", ""password"": ""...""}" <br>
+POST       /login       Retorna o Token JWT   "{""username"": ""..."", ""password"": ""...""}" <br>
 
 Tarefas (Requer Token)
 Header Obrigatório: Authorization: <SEU_TOKEN_AQUI>
 
-Método     Endpoint      Descrição                  Exemplo de Body
-GET        /tasks        Lista todas as tarefas     N/A
-POST       /tasks        Cria nova tarefa           "{""title"": ""Estudar"", ""description"": ""SQL""}"
-PUT        /tasks/<id>,  Atualiza (Parcial/Total)   "{""status"": true}"
-DELETE     /tasks/<id>,  Remove uma tarefa          N/A
+Método     Endpoint      Descrição                  Exemplo de Body <br>
+GET        /tasks        Lista todas as tarefas     N/A <br>
+POST       /tasks        Cria nova tarefa           "{""title"": ""Estudar"", ""description"": ""SQL""}" <br>
+PUT        /tasks/<id>,  Atualiza (Parcial/Total)   "{""status"": true}" <br>
+DELETE     /tasks/<id>,  Remove uma tarefa          N/A <br>
 
 
 
@@ -146,10 +146,10 @@ python testador_seguro.py
 ## 🚧 Roadmap & Melhorias Futuras
 Este projeto está em constante evolução. Os próximos passos incluem:
 
-[ ] Docker: Containerização da aplicação para fácil deploy.
-[ ] Swagger UI: Documentação interativa automática.
-[ ] Testes Unitários: Implementação de Pytest com cobertura de código.
-[ ] Filtros Avançados: Busca de tarefas por status ou título via Query Par
+[ ] Docker: Containerização da aplicação para fácil deploy. <br>
+[ ] Swagger UI: Documentação interativa automática. <br>
+[ ] Testes Unitários: Implementação de Pytest com cobertura de código. <br>
+[ ] Filtros Avançados: Busca de tarefas por status ou título via Query Par. <br>
 
 ## 📄 Licença
 Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
@@ -157,4 +157,4 @@ Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes
 ## 👨‍💻 Autor
 Desenvolvido por Enio Jr como parte de um portfólio de Engenharia de Software Backend.
 
-📧 Entre em contato: eniojr100@gmail.com 🔗 LinkedIn: https://www.linkedin.com/in/enioeduardojr/ 📷 Instagram: https://www.instagram.com/enio_juniorrr/
+📧 Entre em contato: eniojr100@gmail.com 🔗 LinkedIn: https://www.linkedin.com/in/enioeduardojr/ 📷 Instagram: https://www.instagram.com/enio_juniorrr/ <br>
