@@ -157,4 +157,6 @@ Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes
 ## 👨‍💻 Autor
 Desenvolvido por Enio Jr como parte de um portfólio de Engenharia de Software Backend.
 
-📧 Entre em contato: eniojr100@gmail.com 🔗 LinkedIn: https://www.linkedin.com/in/enioeduardojr/ 📷 Instagram: https://www.instagram.com/enio_juniorrr/ <br>
+📧 Entre em contato: eniojr100@gmail.com <br>
+🔗 LinkedIn: https://www.linkedin.com/in/enioeduardojr/ <br>
+📷 Instagram: https://www.instagram.com/enio_juniorrr/ <br>
