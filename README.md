@@ -1,153 +1,112 @@
 # 🛡️ TaskMaster API
 
-![Python Version](https://img.shields.io/badge/python-3.10%2B-blue?style=flat&logo=python)
+![Python Version](https://img.shields.io/badge/python-3.13%2B-blue?style=flat&logo=python)
 ![Flask](https://img.shields.io/badge/flask-2.3.x-lightgrey?style=flat&logo=flask)
+![Swagger](https://img.shields.io/badge/docs-Swagger_UI-green?style=flat&logo=swagger)
 ![Security](https://img.shields.io/badge/security-JWT-orange?style=flat&logo=json-web-tokens)
-![Status](https://img.shields.io/badge/status-active-success?style=flat)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat)
 
-## 📖 Sobre o Projeto
+> Uma API RESTful robusta com documentação interativa, arquitetura MVC e autenticação segura.
 
-O **TaskMaster API** não é apenas um gerenciador de tarefas; é um estudo prático sobre **Arquitetura de Software** e **Desenvolvimento Backend Moderno**. 
-
-O objetivo principal deste projeto foi construir uma aplicação que fugisse dos básico, implementando padrões reais de mercado como **MVC (Model-View-Controller)**, separação de responsabilidades e manipulação direta de banco de dados SQL sem dependência excessiva de ORMs, garantindo performance e controle total sobre as queries.
-
-Este projeto simula o backend de uma aplicação de produtividade (como Todoist ou Trello), pronto para ser consumido por clientes Front-end (React, Vue) ou Mobile.
+O **TaskMaster** é um sistema de backend desenvolvido para demonstrar boas práticas de Engenharia de Software. O projeto vai além do CRUD básico, implementando **Swagger UI** para testes em tempo real, **Autenticação JWT** manual e **Segurança de Dados**.
 
 ---
 
-## 🧠 Arquitetura e Design
+## 📄 Documentação Interativa (Swagger UI)
 
-O projeto segue estritamente o padrão **MVC (Model-View-Controller)** adaptado para APIs, garantindo a separação de responsabilidades (SoC).
+Esqueça o Postman! Este projeto possui documentação viva gerada automaticamente.
+Após rodar o servidor, acesse:
 
-### Fluxo da Aplicação<br>
-graph LR<br>
-    A[Cliente] -->|Request + Token| B(Middleware Auth)<br>
-    B -->|Aprovado| C{Controller}<br>
-    C -->|Regras de Negócio| D[Model Manager]<br>
-    D -->|SQL Query| E[(SQLite Database)]<br>
-    E -->|Dados| D<br>
-    D -->|Objetos| C<br>
-    C -->|JSON| A<br>
+👉 **http://127.0.0.1:5000/apidocs**
 
-## 📂 Estrutura de Pastas
-A organização do código reflete a separação lógica:
+Lá você pode:
+1.  Visualizar todas as rotas e os dados esperados (JSON).
+2.  Testar as requisições direto pelo navegador.
+3.  Entender os códigos de erro (400, 401, 404).
 
-projeto_taskmaster/ <br>
-│ <br>
-├── app/ <br>
-│   ├── __init__.py          # Inicialização do App e Flask<br>
-│   ├── controllers/         # Rotas e validação de entrada (HTTP)<br>
-│   │   ├── auth_controller.py<br>
-│   │   └── task_controller.py<br>
-│   ├── models/              # Lógica de negócios e acesso a dados (DAO)<br>
-│   │   ├── task.py<br>
-│   │   ├── task_manager.py<br>
-│   │   └── user_manager.py<br>
-│   └── utils/               # Utilitários e Decorators<br>
-│       └── auth.py          # Lógica de verificação JWT<br>
-│<br>
-├── db_setup.py              # Script de migração/criação do banco<br>
-├── run.py                   # Ponto de entrada do servidor<br>
-├── config.py                # Variáveis de ambiente e segredos<br>
-└── requirements.txt         # Dependências do projeto<br>
+---
 
-## ⚙️ Funcionalidades
-**Gerenciamento de Tarefas (CRUD)** <br>
--Criação de Tarefas: Adicionar novas tarefas com título e descrição.<br>
--Listagem de Tarefas: Visualizar todas as tarefas cadastradas no sistema.<br>
--Atualização Inteligente: Editar tarefas existentes. O sistema suporta edição parcial (ex: mudar apenas o status para "Concluído" sem precisar reescrever o título).<br>
--Exclusão de Tarefas: Remover tarefas permanentemente do banco de dados.<br>
+## 🚀 Destaques Tecnológicos
 
-**Gerenciamento de Usuários (Autenticação)** <br>
--Registro de Conta: Permite que novos usuários criem uma conta fornecendo usuário e senha.<br>
--Login Seguro: Autenticação via credenciais que retorna um Token de Acesso (JWT) temporário.<br>
--Sessão Stateless: Não requer cookies de sessão; o acesso é garantido puramente via token.<br>
+* **Documentação Automática:** Integração com `Flasgger` para gerar especificações OpenAPI 2.0.
+* **Autenticação JWT:** Middleware customizado para proteção de rotas.
+* **Password Hashing:** As senhas são criptografadas com `pbkdf2:sha256`.
+* **Arquitetura MVC:** Separação clara entre Models, Controllers e Views.
+* **Smart Updates (PATCH):** Atualização parcial de recursos sem sobrescrever dados não enviados.
+* **Segurança SQL:** Prevenção total contra SQL Injection usando Parameterized Queries.
 
-## ⚙️ Funcionalidades Técnicas (Engenharia e Código) <br>
-**Segurança Avançada**<br>
--Criptografia de Senhas: Utiliza o algoritmo pbkdf2:sha256 para hashing. As senhas nunca são salvas em texto puro no banco.<br>
--Proteção via Decorators: Implementação de um middleware @token_required que intercepta requisições e valida a assinatura do JWT antes de permitir o acesso à rota.<br>
--Prevenção contra SQL Injection: Uso estrito de Parameterized Queries (placeholders ?) em todas as camadas de acesso ao banco.<br>
-
-**Arquitetura e Design** <br>
--Padrão MVC: Separação clara entre Rotas (Controllers), Lógica de Negócio/Dados (Models) e Utilitários.<br>
--Persistência SQL: Uso de banco de dados relacional (SQLite) com criação automática de tabelas e relacionamentos.<br>
--API RESTful: Endpoints padronizados utilizando os verbos HTTP corretos (GET, POST, PUT, DELETE) e códigos de status semânticos (200, 201, 400, 401, 404).<br>
-
-**Lógica Otimizada** <br>
--Construtor de Queries Dinâmico: O método de atualização (UPDATE) detecta quais campos foram enviados no JSON e monta a string SQL sob demanda, evitando sobrescrita acidental de dados.<br>
-
-## 🚀 Destaques Técnicos
-**Autenticação JWT (JSON Web Token)**: Implementação manual de um sistema de login seguro. O token é exigido no Header para rotas protegidas.
-
-**Password Hashing**: As senhas são criptografadas com pbkdf2:sha256 antes de serem salvas, garantindo que nem mesmo o admin tenha acesso às senhas originais.
-
-**Smart Updates (PATCH/PUT)**: O sistema utiliza construção dinâmica de SQL para permitir atualizações parciais. Você pode enviar apenas o campo que deseja alterar (ex: status) sem sobrescrever o resto do objeto.
-
-**Prevenção de SQL Injection**: Uso rigoroso de Parameterized Queries (placeholders ?) em todas as interações com o banco.
-
-**Tratamento de Erros**: Respostas HTTP padronizadas (400 para erro do cliente, 401 para não autorizado, 404 para não encontrado).
+---
 
 ## 🛠️ Instalação e Execução
-Pré-requisitos<br>
-Python 3.10 ou superior
 
-Passo a Passo
-Clone o repositório:
-
+### 1. Clone e Prepare o Ambiente
+```bash
 git clone [https://github.com/EnioJr18/TaskMaster-API.git](https://github.com/EnioJr18/TaskMaster-API.git)
 cd TaskMaster-API
+```
 
-Crie e ative o ambiente virtual:
-# Windows
-python -m venv venv<br>
+# Crie o ambiente virtual
+```bash
+python -m venv venv
+```
+# Ative o ambiente
+```bash
+# Windows:
 .\venv\Scripts\activate
-
-# Linux/Mac
-python3 -m venv venv<br>
+# Linux/Mac:
 source venv/bin/activate
-
-Instale as dependências:<br>
+```
+2. Instale as Dependências
+```bash
 pip install -r requirements.txt
-
-Prepare o Banco de Dados:<br>
-python db_setup.py<br>
-(Isso criará o arquivo taskmaster.db e as tabelas necessárias)
-
-Inicie o Servidor:<br>
+```
+3. Prepare o Banco de Dados
+```bash
+python db_setup.py
+```
+4. Inicie o Servidor
+```bash
 python run.py
+```
+O servidor rodará em http://127.0.0.1:5000
 
-## 🔑 Documentação da API
+🔐 Como Testar Rotas Protegidas (No Swagger)
+Como a API é segura, você precisa de um "crachá" (Token) para acessar as rotas de tarefas. Siga os passos na interface do Swagger:
 
-Autenticação
-Método     Endpoint     Descrição             Body Necessário<br>
-POST       /register    Cria novo usuário     "{""username"": ""..."", ""password"": ""...""}" <br>
-POST       /login       Retorna o Token JWT   "{""username"": ""..."", ""password"": ""...""}" <br>
+1. Vá na rota POST /register e crie um usuário.
+2. Vá na rota POST /login e faça o login.
+3. Copie o token gerado na resposta (ex: eyJhbG...).
+4.No topo da página, clique no botão verde Authorize.
+5.Digite: Bearer SEU_TOKEN_AQUI (Com a palavra Bearer e um espaço antes).
+6.Clique em Authorize e feche a janela.
 
-Tarefas (Requer Token)
-Header Obrigatório: Authorization: <SEU_TOKEN_AQUI>
+Pronto! Agora os cadeados das rotas de Tarefas abrirão e você poderá testar GET, POST, PUT e DELETE.
 
-Método     Endpoint      Descrição                  Exemplo de Body <br>
-GET        /tasks        Lista todas as tarefas     N/A <br>
-POST       /tasks        Cria nova tarefa           "{""title"": ""Estudar"", ""description"": ""SQL""}" <br>
-PUT        /tasks/<id>,  Atualiza (Parcial/Total)   "{""status"": true}" <br>
-DELETE     /tasks/<id>,  Remove uma tarefa          N/A <br>
+🧪 Testes Automatizados
+O projeto inclui um script robô que simula um usuário real para validar o fluxo completo (Login -> Token -> CRUD).
 
-
-
-
-## 🧪 Testes Automatizados
-O projeto inclui scripts para validação de funcionamento e segurança.
-
-Para testar o fluxo completo (Auth + CRUD): Certifique-se que o servidor está rodando e execute:
+```bash
 python testador_seguro.py
+```
+📂 Estrutura do Projeto
+```bash
+app/
+├── controllers/       # Rotas da API (Lógica de entrada)
+│   ├── auth_controller.py
+│   └── task_controller.py
+├── models/            # Regras de Negócio e SQL (DAO)
+│   ├── user_manager.py
+│   └── task_manager.py
+├── templates/         # Interface Web Simples (Front-end)
+├── utils/             # Decorators de Segurança (Auth)
+└── __init__.py        # Configuração do Flask e Swagger
+```
 
 ## 🚧 Roadmap & Melhorias Futuras
 Este projeto está em constante evolução. Os próximos passos incluem:
 
 [ ] Docker: Containerização da aplicação para fácil deploy. <br>
-[ ] Swagger UI: Documentação interativa automática. <br>
+[x] Swagger UI: Documentação interativa automática. <br>
 [ ] Testes Unitários: Implementação de Pytest com cobertura de código. <br>
 [ ] Filtros Avançados: Busca de tarefas por status ou título via Query Par. <br>
 
