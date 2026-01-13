@@ -41,3 +41,4 @@ def login():
         return jsonify({'token': token}), 200
     else:
         return jsonify({'message': 'Credenciais inválidas.'}), 401
+

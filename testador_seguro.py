@@ -36,7 +36,7 @@ def testar_sistema_seguro():
         return
 
     token = resp.json()['token']
-    print(f"✅ Token recebido: {token[:15]}...")
+    print(f"✅ Token recebido: {token}...")
 
     # 4. Usa o token para acessar a rota protegida
     print("\n📝 4. Acessando tarefas COM token...")
