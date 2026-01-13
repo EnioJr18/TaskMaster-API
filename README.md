@@ -41,7 +41,7 @@ Lá você pode:
 
 ### 1. Clone e Prepare o Ambiente
 ```bash
-git clone [https://github.com/EnioJr18/TaskMaster-API.git](https://github.com/EnioJr18/TaskMaster-API.git)
+git clone https://github.com/EnioJr18/TaskMaster-API.git
 cd TaskMaster-API
 ```
 
@@ -73,12 +73,12 @@ O servidor rodará em http://127.0.0.1:5000
 🔐 Como Testar Rotas Protegidas (No Swagger)
 Como a API é segura, você precisa de um "crachá" (Token) para acessar as rotas de tarefas. Siga os passos na interface do Swagger:
 
-1. Vá na rota POST /register e crie um usuário.
-2. Vá na rota POST /login e faça o login.
-3. Copie o token gerado na resposta (ex: eyJhbG...).
-4.No topo da página, clique no botão verde Authorize.
-5.Digite: Bearer SEU_TOKEN_AQUI (Com a palavra Bearer e um espaço antes).
-6.Clique em Authorize e feche a janela.
+1. Vá na rota POST /register e crie um usuário. <br>
+2. Vá na rota POST /login e faça o login. <br>
+3. Copie o token gerado na resposta (ex: eyJhbG...). <br>
+4.No topo da página, clique no botão verde Authorize. <br>
+5.Digite: Bearer SEU_TOKEN_AQUI (Com a palavra Bearer e um espaço antes). <br>
+6.Clique em Authorize e feche a janela. <br>
 
 Pronto! Agora os cadeados das rotas de Tarefas abrirão e você poderá testar GET, POST, PUT e DELETE.
 
