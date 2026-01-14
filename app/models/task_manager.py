@@ -24,7 +24,7 @@ class TaskManager:
 
         return Task(new_id, title, description).to_dict()
 
-    def get_all_tasks(self, status_filter=None):
+    def get_all_tasks(self, status_filter=None, limit=None, offset=None):
         conn = self._get_connection()
         cursor = conn.cursor()
 
@@ -39,6 +39,11 @@ class TaskManager:
                 params.append(1)
             else:
                 params.append(0)
+
+        if limit is not None and offset is not None:
+            query += ' LIMIT ? OFFSET ?'
+            params.append(limit)
+            params.append(offset)
 
         cursor.execute(query, params)
         tasks = cursor.fetchall()

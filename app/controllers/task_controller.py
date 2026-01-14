@@ -10,7 +10,7 @@ manager = TaskManager()
 @token_required
 def list_tasks():
     """
-    Listar tarefas (com filtro opcional)
+    Listar tarefas (com filtro e paginação)
     ---
     tags:
       - Tarefas
@@ -22,27 +22,33 @@ def list_tasks():
         type: boolean
         required: false
         description: Filtre por 'true' (concluídas) ou 'false' (pendentes)
+      - name: page
+        in: query
+        type: integer
+        default: 1
+        description: Número da página (Padrão 1)
+      - name: per_page
+        in: query
+        type: integer
+        default: 10
+        description: Itens por página (Padrão 10)
     responses:
       200:
-        description: Lista de tarefas recuperada com sucesso
-        schema:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              title:
-                type: string
-              description:
-                type: string
-              status:
-                type: boolean
+        description: Lista recuperada com sucesso
     """
     status = request.args.get('status')
-    print(f"👀 O Controller recebeu o filtro: {status}")
-    tasks_lists = manager.get_all_tasks(status)
-    return jsonify(tasks_lists), 200
+    page = (request.args.get('page', 1, type=int))
+    per_page = (request.args.get('per_page', 10, type=int))
+
+    offset = (page - 1) * per_page
+    tasks_lists = manager.get_all_tasks(status, limit=per_page, offset=offset)
+    
+    resposta = {
+        'page': page,
+        'per_page': per_page,
+        'data': tasks_lists
+    }
+    return jsonify(resposta), 200
 
 
 @app.route('/tasks', methods=['POST'])
