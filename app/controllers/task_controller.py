@@ -10,12 +10,18 @@ manager = TaskManager()
 @token_required
 def list_tasks():
     """
-    Listar todas as tarefas
+    Listar tarefas (com filtro opcional)
     ---
     tags:
       - Tarefas
     security:
       - Bearer: []
+    parameters:
+      - name: status
+        in: query
+        type: boolean
+        required: false
+        description: Filtre por 'true' (concluídas) ou 'false' (pendentes)
     responses:
       200:
         description: Lista de tarefas recuperada com sucesso
@@ -33,7 +39,9 @@ def list_tasks():
               status:
                 type: boolean
     """
-    tasks_lists = manager.get_all_tasks()
+    status = request.args.get('status')
+    print(f"👀 O Controller recebeu o filtro: {status}")
+    tasks_lists = manager.get_all_tasks(status)
     return jsonify(tasks_lists), 200
 
 

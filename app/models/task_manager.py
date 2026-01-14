@@ -19,28 +19,41 @@ class TaskManager:
         ''', (title, description))
 
         conn.commit()
-
         new_id = cursor.lastrowid
         conn.close()
 
         return Task(new_id, title, description).to_dict()
 
-    def get_all_tasks(self):
+    def get_all_tasks(self, status_filter=None):
         conn = self._get_connection()
         cursor = conn.cursor()
 
-        cursor.execute('SELECT id, title, description, status FROM tasks')
-        rows = cursor.fetchall()
+        query = 'SELECT * FROM tasks'
+        params = []
 
-        tasks = []
-        for row in rows:
-            task = Task(id=row[0], title=row[1],
-                        description=row[2], status=bool(row[3]))
-            tasks.append(task)
+        if status_filter is not None:
+            query += ' WHERE status = ?'
 
+            
+            if str(status_filter).lower() == 'true':
+                params.append(1)
+            else:
+                params.append(0)
+
+        cursor.execute(query, params)
+        tasks = cursor.fetchall()
         conn.close()
 
-        return [task.to_dict() for task in tasks]
+        task_list = []
+        for task in tasks:
+            task_list.append({
+                'id': task[0],
+                'title': task[1],
+                'description': task[2],
+                'status': bool(task[3])
+            })
+
+        return task_list
 
     def delete_task(self, task_id):
         conn = self._get_connection()
@@ -53,7 +66,6 @@ class TaskManager:
         conn.close()
 
         return rows_affected > 0
-    
 
     def update_task(self, task_id, data):
         conn = self._get_connection()
@@ -70,7 +82,6 @@ class TaskManager:
             campos_para_atualizar.append("description = ?")
             valores.append(data['description'])
 
-
         if 'status' in data:
             campos_para_atualizar.append("status = ?")
             valores.append(int(data['status']))
@@ -78,7 +89,7 @@ class TaskManager:
         if not campos_para_atualizar:
             conn.close()
             return False
-        
+
         valores.append(task_id)
         sql = f"UPDATE tasks SET {', '.join(campos_para_atualizar)} WHERE id = ?"
         cursor.execute(sql, valores)
@@ -87,5 +98,3 @@ class TaskManager:
         conn.close()
 
         return rows_affected > 0
-    
-        
