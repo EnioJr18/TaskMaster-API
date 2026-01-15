@@ -108,11 +108,11 @@ Autenticação
 
 Tarefas (Requer Header ```Authorization: Bearer <TOKEN>```)
 ```bash
-Método	    Rota	        Descrição	                Params
-GET 	    /tasks	        Lista tarefas do usuário.	?page=1&per_page=10&status=true
-POST	    /tasks	        Cria uma nova tarefa.	    Body JSON
-PUT 	    /tasks/{id}	    Atualiza uma tarefa.	    Body JSON
-DELETE	    /tasks/{id}	    Remove uma tarefa.	        -
+│Método	    │Rota	        │Descrição	                │Params
+│GET 	    │/tasks	        │Lista tarefas do usuário.	│?page=1&per_page=10&status=true
+│POST	    │/tasks	        │Cria uma nova tarefa.	    │Body JSON
+│PUT 	    │/tasks/{id}	│Atualiza uma tarefa.	    │Body JSON
+│DELETE	    │/tasks/{id}	│Remove uma tarefa.	        │-
 ```
 
 ## 📄 Licença
