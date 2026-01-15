@@ -1,114 +1,119 @@
-# 🛡️ TaskMaster API
+# 📋 TaskMaster API
 
-![Python Version](https://img.shields.io/badge/python-3.13%2B-blue?style=flat&logo=python)
-![Flask](https://img.shields.io/badge/flask-2.3.x-lightgrey?style=flat&logo=flask)
-![Swagger](https://img.shields.io/badge/docs-Swagger_UI-green?style=flat&logo=swagger)
-![Security](https://img.shields.io/badge/security-JWT-orange?style=flat&logo=json-web-tokens)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat)
+![Python](https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&logo=python)
+![Flask](https://img.shields.io/badge/Flask-2.x-black?style=for-the-badge&logo=flask)
+![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker)
+![Swagger](https://img.shields.io/badge/Swagger-UI-85EA2D?style=for-the-badge&logo=swagger)
+![Pytest](https://img.shields.io/badge/Tests-Passing-brightgreen?style=for-the-badge&logo=pytest)
 
-> Uma API RESTful robusta com documentação interativa, arquitetura MVC e autenticação segura.
-
-O **TaskMaster** é um sistema de backend desenvolvido para demonstrar boas práticas de Engenharia de Software. O projeto vai além do CRUD básico, implementando **Swagger UI** para testes em tempo real, **Autenticação JWT** manual e **Segurança de Dados**.
+O **TaskMaster** é uma API RESTful robusta desenvolvida para gerenciamento de tarefas. O projeto foi construído com foco em boas práticas de engenharia de software, incluindo autenticação JWT, documentação interativa, testes automatizados e containerização com Docker.
 
 ---
 
-## 📄 Documentação Interativa (Swagger UI)
+## 🚀 Funcionalidades
 
-Esqueça o Postman! Este projeto possui documentação viva gerada automaticamente.
-Após rodar o servidor, acesse:
-
-👉 **http://127.0.0.1:5000/apidocs**
-
-Lá você pode:
-1.  Visualizar todas as rotas e os dados esperados (JSON).
-2.  Testar as requisições direto pelo navegador.
-3.  Entender os códigos de erro (400, 401, 404).
+- **🔐 Autenticação Segura:** Sistema de Registro e Login com Tokens JWT (JSON Web Tokens).
+- **📝 CRUD Completo:** Criação, Leitura, Atualização e Exclusão de tarefas.
+- **🔍 Filtros Dinâmicos:** Filtragem de tarefas por status (Concluída/Pendente).
+- **📄 Paginação:** Otimização de listagem com suporte a `limit` e `offset`.
+- **📚 Documentação Interativa:** Swagger UI integrado para testar endpoints visualmente.
+- **🐳 Containerização:** Pronto para rodar em qualquer ambiente via Docker.
+- **🧪 Testes Automatizados:** Cobertura de testes de integração com Pytest.
 
 ---
 
-## 🚀 Destaques Tecnológicos
+## 🛠️ Tecnologias Utilizadas
 
-* **Documentação Automática:** Integração com `Flasgger` para gerar especificações OpenAPI 2.0.
-* **Autenticação JWT:** Middleware customizado para proteção de rotas.
-* **Password Hashing:** As senhas são criptografadas com `pbkdf2:sha256`.
-* **Arquitetura MVC:** Separação clara entre Models, Controllers e Views.
-* **Smart Updates (PATCH):** Atualização parcial de recursos sem sobrescrever dados não enviados.
-* **Segurança SQL:** Prevenção total contra SQL Injection usando Parameterized Queries.
+- **Linguagem:** Python 3.13
+- **Framework Web:** Flask
+- **Banco de Dados:** SQLite (SQL Puro/Raw SQL para performance e controle)
+- **Documentação:** Flasgger (Swagger UI)
+- **Testes:** Pytest & Unittest
+- **Container:** Docker
 
 ---
 
-## 🛠️ Instalação e Execução
+## 📂 Estrutura do Projeto
 
-### 1. Clone e Prepare o Ambiente
 ```bash
-git clone https://github.com/EnioJr18/TaskMaster-API.git
-cd TaskMaster-API
+projeto_taskmaster/
+├── app/
+│   ├── controllers/    # Lógica das rotas (Endpoints)
+│   ├── models/         # Camada de acesso ao banco (SQL)
+│   ├── utils/          # Decorators e utilitários (Auth)
+│   └── __init__.py     # Configuração do App Flask
+├── tests/              # Testes automatizados (Pytest)
+├── .dockerignore       # Arquivos ignorados pelo Docker
+├── Dockerfile          # Receita da imagem Docker
+├── README.md           # Documentação do projeto
+├── requirements.txt    # Dependências do Python
+└── run.py              # Ponto de entrada da aplicação
 ```
 
-# Crie o ambiente virtual
+## ⚡ Como Rodar o Projeto
+Você pode rodar a aplicação localmente (com Python instalado) ou via Docker.
+
+Opção 1: Rodando com Docker (Recomendado)
+Construa a imagem:
 ```bash
+docker build -t taskmaster-app .
+```
+Inicie o container:
+```bash
+docker run -p 5000:5000 taskmaster-app
+```
+Acesse: O sistema estará rodando em: http://localhost:5000/apidocs
+
+Opção 2: Rodando Localmente (Python)
+Clone o repositório:
+```bash
+git clone https://github.com/SEU-USUARIO/taskmaster.git
+cd taskmaster
+```
+Crie e ative um ambiente virtual:
+```bash
+# Windows
 python -m venv venv
-```
-# Ative o ambiente
-```bash
-# Windows:
 .\venv\Scripts\activate
-# Linux/Mac:
+
+# Linux/Mac
+python3 -m venv venv
 source venv/bin/activate
 ```
-2. Instale as Dependências
+Instale as dependências:
 ```bash
 pip install -r requirements.txt
 ```
-3. Prepare o Banco de Dados
-```bash
-python db_setup.py
-```
-4. Inicie o Servidor
+Execute a aplicação:
 ```bash
 python run.py
 ```
-O servidor rodará em http://127.0.0.1:5000
 
-🔐 Como Testar Rotas Protegidas (No Swagger)
-Como a API é segura, você precisa de um "crachá" (Token) para acessar as rotas de tarefas. Siga os passos na interface do Swagger:
+## 🧪 Rodando os Testes
+O projeto conta com testes de integração que validam o fluxo de autenticação e manipulação de tarefas.
 
-1. Vá na rota POST /register e crie um usuário. 
-2. Vá na rota POST /login e faça o login. 
-3. Copie o token gerado na resposta (ex: eyJhbG...). 
-4. No topo da página, clique no botão verde Authorize. 
-5. Digite: Bearer SEU_TOKEN_AQUI (Com a palavra Bearer e um espaço antes). 
-6. Clique em Authorize e feche a janela. 
-
-Pronto! Agora os cadeados das rotas de Tarefas abrirão e você poderá testar GET, POST, PUT e DELETE.
-
-🧪 Testes Automatizados
-O projeto inclui um script robô que simula um usuário real para validar o fluxo completo (Login -> Token -> CRUD).
-
+Para executar os testes, rode no terminal:
 ```bash
-python testador_seguro.py
+python -m pytest
 ```
-📂 Estrutura do Projeto
+📖 Documentação da API (Endpoints)
+A documentação completa pode ser visualizada via Swagger UI (/apidocs), mas aqui está um resumo:
+
+Autenticação
 ```bash
-app/
-├── controllers/       # Rotas da API (Lógica de entrada)
-│   ├── auth_controller.py
-│   └── task_controller.py
-├── models/            # Regras de Negócio e SQL (DAO)
-│   ├── user_manager.py
-│   └── task_manager.py
-├── templates/         # Interface Web Simples (Front-end)
-├── utils/             # Decorators de Segurança (Auth)
-└── __init__.py        # Configuração do Flask e Swagger
+│Método  │Rota        │Descrição
+│POST/   │register    │Cria um novo usuário.         
+│POST/   │login       │Retorna o Token JWT de acesso.
 ```
 
-## 🚧 Roadmap & Melhorias Futuras
-Este projeto está em constante evolução. Os próximos passos incluem:
-
-[ ] Docker: Containerização da aplicação para fácil deploy. <br>
-[x] Swagger UI: Documentação interativa automática. <br>
-[ ] Testes Unitários: Implementação de Pytest com cobertura de código. <br>
-[ ] Filtros Avançados: Busca de tarefas por status ou título via Query Par. <br>
+Tarefas (Requer Header ```Authorization: Bearer <TOKEN>```)
+```bash
+Método	    Rota	        Descrição	                Params
+GET 	    /tasks	        Lista tarefas do usuário.	?page=1&per_page=10&status=true
+POST	    /tasks	        Cria uma nova tarefa.	    Body JSON
+PUT 	    /tasks/{id}	    Atualiza uma tarefa.	    Body JSON
+DELETE	    /tasks/{id}	    Remove uma tarefa.	        -
+```
 
 ## 📄 Licença
 Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
