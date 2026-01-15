@@ -96,7 +96,7 @@ Para executar os testes, rode no terminal:
 ```bash
 python -m pytest
 ```
-📖 Documentação da API (Endpoints)
+## 📖 Documentação da API (Endpoints)
 A documentação completa pode ser visualizada via Swagger UI (/apidocs), mas aqui está um resumo:
 
 Autenticação
