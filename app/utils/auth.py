@@ -8,13 +8,21 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-
-        if 'Authorization' in request.headers:
-            token = request.headers['Authorization']
+        
+        # 1. Tenta pegar do Header
+        auth_header = request.headers.get('Authorization')
+        
+        if auth_header:
+            # A lógica do "Bearer": separar a palavra do código
+            try:
+                # Divide "Bearer SEU_TOKEN" em duas partes e pega a segunda
+                token = auth_header.split(" ")[1]
+            except IndexError:
+                # Se vier sem "Bearer" (só o código), tenta pegar direto
+                token = auth_header
 
         if not token:
             return jsonify({'message': 'Token de autenticação ausente!'}), 401
-
         try:
             data = jwt.decode(token, Secrety_KEY, algorithms=['HS256'])
 

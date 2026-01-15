@@ -1,5 +1,5 @@
 from flask import request, jsonify
-import datetime
+from datetime import datetime, timezone, timedelta
 import jwt
 from app import app
 from app.models.user_manager import UserManager
@@ -35,7 +35,7 @@ def login():
     if user_id:
         payload = {
             'user_id': user_id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+            'exp': datetime.now(timezone.utc) + timedelta(hours=1)
         }
         token = jwt.encode(payload, Secrety_KEY, algorithm='HS256')
         return jsonify({'token': token}), 200

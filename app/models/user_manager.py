@@ -2,8 +2,8 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserManager:
-    def __init__(self):
-        self.db_path = 'taskmaster.db'
+    def __init__(self, db_path='taskmaster.db'):
+        self.db_path = db_path
 
     def __get__connection(self):
         return sqlite3.connect(self.db_path)
